@@ -73,7 +73,8 @@ Param : {
 
 To get Details : {host_ip}:{host:port}/falcon/api/Detail/
 Method : POST
-header : {
+header :
+	{
             Content-Type:application/json,
             action:detail,
             auth_key:qwertyuiop,
@@ -86,9 +87,9 @@ Param :{
 
 To Run the API:
 
-git clone git@github.com:ashshakya/falcon_api.git
-cd falcon_api
-pip install -r requirement.txt
-gunicorn --reload falcon_api.app
+	git clone git@github.com:ashshakya/falcon_api.git
+	cd falcon_api
+	pip install -r requirement.txt
+	gunicorn --reload falcon_api.app
 
 
