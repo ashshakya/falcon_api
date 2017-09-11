@@ -85,7 +85,10 @@ Param :{
 
 
 To Run the API:
+
 git clone git@github.com:ashshakya/falcon_api.git
 cd falcon_api
 pip install -r requirement.txt
 gunicorn --reload falcon_api.app
+
+
