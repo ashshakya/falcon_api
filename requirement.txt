@@ -1,0 +1,2 @@
+falcon==1.2.0
+ipython==5.4.1
