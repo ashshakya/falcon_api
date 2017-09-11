@@ -1,0 +1,194 @@
+{
+	"id": "09fd95e5-f1c1-e69c-22e8-d37833887b74",
+	"name": "falcon_api",
+	"description": "",
+	"order": [
+		"98e9c9a2-f35b-f584-281c-252dfe998f90",
+		"e7ffc6ed-c686-22a0-02e8-476066dd2c6c",
+		"27bf307c-f542-7f64-892b-c8c804416748",
+		"94784fca-c1b9-101b-8531-271a480513ea"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1505116710247,
+	"owner": "733253",
+	"public": false,
+	"requests": [
+		{
+			"id": "27bf307c-f542-7f64-892b-c8c804416748",
+			"headers": "Content-Type: application/json\naction: login\nauth_key: qwertyuiop\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "action",
+					"value": "login",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "auth_key",
+					"value": "qwertyuiop",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "127.0.0.1:8000/falcon/api/Login/",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "09fd95e5-f1c1-e69c-22e8-d37833887b74",
+			"data": [],
+			"dataMode": "raw",
+			"name": "127.0.0.1:8000/falcon/api/Login/",
+			"description": "Falcon_API Login params",
+			"descriptionFormat": "html",
+			"time": 1505116830128,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n\t\"username\" : \"example@gmail.com\",\n\t\"password\" : \"qwertyuiop\"\n}"
+		},
+		{
+			"id": "94784fca-c1b9-101b-8531-271a480513ea",
+			"headers": "Content-Type: application/json\naction: register\nauth_key: qwertyuiop\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "action",
+					"value": "register",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "auth_key",
+					"value": "qwertyuiop",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "127.0.0.1:8000/falcon/api/Register/",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "09fd95e5-f1c1-e69c-22e8-d37833887b74",
+			"data": [],
+			"dataMode": "raw",
+			"name": "127.0.0.1:8000/falcon/api/Register/",
+			"description": "Falcon_Api Registeration Params",
+			"descriptionFormat": "html",
+			"time": 1505116889152,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n\t\"name\" : \"Example\",\n\t\"email\": \"example@gmail.com\",\n\t\"password\" : \"qwertyuiop\",\n\t\"re-password\" : \"qwertyuiop\"\n}\n\n\n\n\n"
+		},
+		{
+			"id": "98e9c9a2-f35b-f584-281c-252dfe998f90",
+			"headers": "Content-Type: application/json\naction: detail\nauth_key: qwertyuiop\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "action",
+					"value": "detail",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "auth_key",
+					"value": "qwertyuiop",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "",
+					"value": "",
+					"description": "",
+					"enabled": false
+				}
+			],
+			"url": "127.0.0.1:8000/falcon/api/Detail/",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "09fd95e5-f1c1-e69c-22e8-d37833887b74",
+			"data": [],
+			"dataMode": "raw",
+			"name": "127.0.0.1:8000/falcon/api/Detail/",
+			"description": "Falcon_API Detail params",
+			"descriptionFormat": "html",
+			"time": 1505116713816,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n\t\"email\": \"example@gmail.com\",\n}"
+		},
+		{
+			"id": "e7ffc6ed-c686-22a0-02e8-476066dd2c6c",
+			"headers": "Content-Type: application/json\naction: upload\nauth_key: qwertyuiop\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "action",
+					"value": "upload",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "auth_key",
+					"value": "qwertyuiop",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "127.0.0.1:8000/falcon/api/Upload/",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1505116816584,
+			"name": "127.0.0.1:8000/falcon/api/Upload/",
+			"description": "Falcon_API Upload File params",
+			"collectionId": "09fd95e5-f1c1-e69c-22e8-d37833887b74",
+			"responses": [],
+			"rawModeData": "{\n\t\"filepath\": \"/home/ash/Django/website/manage.py\",\n\t\"email\": \"example@gmail.com\"\n}"
+		}
+	]
+}
