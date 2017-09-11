@@ -1,7 +1,7 @@
 # falcon_api
 
 Create your virtual environment and run following command:
-pip install -r requirement.txt
+    pip install -r requirement.txt
 
 In this, Api uses Mysql as database. So, user must have mysql as backend to store the data. To store data api require python mysql connector that can be install by using following command:
     sudo apt-get install update
