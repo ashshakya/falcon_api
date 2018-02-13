@@ -4,8 +4,7 @@ import os
 
 # portal database
 # TODO: read from api instead of db
-PORTAL_DB_HOST = os.environ.get("PORTAL_DB_HOST","127.0.0.1")
-PORTAL_DB_PORT = int(os.environ.get("PORTAL_DB_PORT",3306))
-PORTAL_DB_USER = os.environ.get("PORTAL_DB_USER","root")
-PORTAL_DB_PASS = os.environ.get("PORTAL_DB_PASS","")
-PORTAL_DB_NAME = os.environ.get("PORTAL_DB_NAME","falcon")
+DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
+DB_PORT = int(os.environ.get("DB_PORT", 27017))
+DB_NAME = os.environ.get("DB_NAME", "falcon")
+DB_COLLECTION = os.environ.get("DB_COLLECTION", "upload")

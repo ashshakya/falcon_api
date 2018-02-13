@@ -1,88 +1,97 @@
-from falcon_project import store
 from hashlib import md5
+import base64
+from datetime import datetime
+
+from pymongo import MongoClient
+import config
 
 
 def register_auth(data):
-    output = ''
-    conn = store.connect_db(store.db_cfg)
-    cur = conn.cursor(buffered=True)
-    print data
+    output = {}
+    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     if data['password'] != data['re-password']:
         return 'Password not matched'
     passwd = str(md5((data['password']).encode('utf-8', 'ignore')).hexdigest())
-    print '909090   '
     name = str(data['name'])
     email = str(data['email'])
-    print name, email, passwd
-    try:
-        q = "INSERT INTO users (`name`, `email`, `passwd`) VALUES ('%s', '%s', '%s')" %(name, email, passwd)
-        print q
-        cur.execute(q)
-        conn.commit()
+    doc = {
+        "name": name,
+        "email": email,
+        "password": passwd
+    }
+    res = db[config.DB_COLLECTION].find_one({"email": email})
+    if not res:
+        db[config.DB_COLLECTION].insert_one(doc)
         output['status'] = 'created'
-    except Exception as e:
-        print e
-        output['status'] = e
-    finally:
-        cur.close()
-        return output
+    else:
+        output['status'] = "email already exists."
+    return output
 
 
-def login_auth(user, passwd):
+def login_auth(email, passwd):
     output = {}
-    conn = store.connect_db(store.db_cfg)
-    cur = conn.cursor(buffered=True)
-    # check.execute('select id')
-    email = ''
-    cur.execute("SELECT email FROM users WHERE email = %s;", [user]) # CHECKS IF USERNAME EXSIST
-    for row in cur:
-        email = row[0]
-    try:
-        if email:
-            cur.execute("SELECT passwd FROM users WHERE email = %s;", [user]) # FETCH THE HASHED PASSWORD
-            for row in cur:
-                if md5(passwd).hexdigest() == row[0]:
-                    output['status'] = 'Loged IN'
-                else:
-                    output['status'] = 'Paswword Invalid'
+    db = MongoClient(config.DB_HOST)[config.DB_NAME]
+    result = db[config.DB_COLLECTION].find_one({"email": email})
+    if result:
+        if md5(passwd).hexdigest() == result["password"]:
+            output['status'] = "success"
+            date = datetime.now()
+            token = base64.b64encode(email) + base64.b64encode(str(date))
+            doc = {
+                "date": date,
+                "token": token
+            }
+            db[config.DB_COLLECTION].update_one({"email": email},
+                                                {'$set': doc})
+            output['access_token'] = token
         else:
-            output['status'] = "Invalid Credential"
-    except Exception as e:
-        output['status'] = e
-    cur.close()
+            output['status'] = False
+    else:
+        output['status'] = "Invalid Credential"
     return output
 
 
 def file_upload(file):
     output = {}
-    conn = store.connect_db(store.db_cfg)
-    cur = conn.cursor(buffered=True)
+    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     file_path = file['filepath']
     email = file['email']
-    try:
-        q = "INSERT INTO `uploads`(`email`, `file_path`) VALUES ('{0}', '{1}')".format(email, file_path)
-        print q
-        cur.execute(q)
-        conn.commit()
-        output['status'] = 'Uploaded'
-    except Exception as e:
-        output['status'] = str(e)
-    finally:
-        return output
+    result = db[config.DB_COLLECTION].find_one({"email": email})
+    if result:
+        if result["token"] == file['access_token']:
+            now = datetime.now()
+            if (now - result["date"]).seconds < 300:
+                doc = {
+                    "file_path": file_path
+                }
+                db[config.DB_COLLECTION].update_one({"email": email},
+                                                    {'$set': doc})
+                output['status'] = "Uploaded"
+            else:
+                output['status'] = "session failed"
+        else:
+            output['status'] = "Not authorized."
+    else:
+        output['status'] = "Not Record Found"
+    return output
 
 
 def upload_detail(data):
     output = {}
-    conn = store.connect_db(store.db_cfg)
-    cur = conn.cursor(buffered=True)
+    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     email = data['email']
-    try:
-        query = "SELECT file_path, datetime FROM uploads WHERE email = '{}'".format(email)
-        cur.execute(query)
-        for row in cur:
-            output[str(row[1])] = row[0]
-            output['status'] = 'Done'
-    except Exception as e:
-        output['status'] = str(e)
-    finally:
-        return output
+    result = db[config.DB_COLLECTION].find_one({"email": email})
+    if result:
+        if result["token"] == data['access_token']:
+            now = datetime.now()
+            if (now - result["date"]).seconds < 300:
+                detail = db[config.DB_COLLECTION].find_one({"email": email})
+                output["file_path"] = detail["file_path"]
+                output['status'] = True
+            else:
+                output['status'] = "session failed"
+        else:
+            output['status'] = "Not authorized."
+    else:
+        output['status'] = "Not Record Found"
+    return output

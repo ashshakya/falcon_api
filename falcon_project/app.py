@@ -1,99 +1,77 @@
 """
 This code creates your WSGI application and aliases it as api.
+This module perform basic api operations like registration, login, upload a file path and details.
 """
+import json
 
+import falcon
 
-import falcon, json
 from auth import auth
 
 
 class LoginClass:
-
+    """ Login api. """
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
-        h = req.headers
         try:
-            if h['AUTH-KEY'] == 'qwertyuiop':
-                if h['ACTION'] == 'login':
-                    d = json.loads(req.stream.read())
-                    username = d['username']
-                    passwd = d['password']
-                    output = auth.login_auth(username, passwd)
-                    if output['status'] == 'success':
-                        resp.body = json.dumps(output)
-                    else:
-                        resp.body = json.dumps(output)
+            d = json.loads(req.stream.read())
+            username = d['username']
+            passwd = d['password']
+            output = auth.login_auth(username, passwd)
+            if output['status'] == 'success':
+                resp.body = json.dumps(output)
             else:
-                resp.body = json.dumps({'output': 'auth key not matched'})
-        except KeyError:
-            resp.body = json.dumps({'output': 'Auth Key not Found'})
+                resp.body = json.dumps(output)
+        except KeyError as k:
+            resp.body = json.dumps({'output': k})
 
 
 class RegisterClass:
-
+    """ Registration Api"""
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
-
-        h = req.headers
         try:
-            print '==='
-            if h['AUTH-KEY'] == 'qwertyuiop':
-                print '=111=='
-                if h['ACTION'] == 'register':
-                    print '===222'
-                    d = json.loads(req.stream.read())
-                    output = auth.register_auth(d)
-                    print output
-                    if output == 'created':
-                        resp.body = json.dumps(output)
-                    else:
-                        resp.body = json.dumps(output)
+            d = json.loads(req.stream.read())
+            output = auth.register_auth(d)
+            if output == 'created':
+                resp.body = json.dumps(output)
             else:
-                resp.body = json.dumps({'output': 'auth key not matched'})
-        except KeyError:
-            resp.body = json.dumps({'output': 'Auth Key not Found'})
+                resp.body = json.dumps(output)
+        except KeyError as k:
+            resp.body = json.dumps({'output': k})
 
 
 class UploadClass:
-
-    def on_put(self, req, resp):
+    """ Upload Api """
+    def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
-
-        h = req.headers
         try:
-            if h['AUTH-KEY'] == 'qwertyuiop':
-                if h['ACTION'] =='upload':
-                    d = json.loads(req.stream.read())
-                    output = auth.file_upload(d)
-                    if output['status'] == 'Uploaded':
-                        resp.body = json.dumps(output)
-                    else:
-                        resp.body = json.dumps(output)
+            d = json.loads(req.stream.read())
+            output = auth.file_upload(d)
+            if output['status'] == 'Uploaded':
+                resp.body = json.dumps(output)
             else:
-                resp.body = json.dumps({'output': 'auth key not matched'})
+                resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': 'Auth Key not Found :{}'.format(k)})
+            resp.body = json.dumps({'output': k})
 
 
 class DetailClass:
+    """ Detail Api """
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
-        h = req.headers
         try:
-            if h['AUTH-KEY'] == 'qwertyuiop':
-                if h['ACTION'] =='detail':
-                    d = json.loads(req.stream.read())
-                    output = auth.upload_detail(d)
-                    if output['status'] == 'Uploaded':
-                        resp.body = json.dumps(output)
-                    else:
-                        resp.body = json.dumps(output)
+            d = json.loads(req.stream.read())
+            output = auth.upload_detail(d)
+            if output['status']:
+                resp.body = json.dumps(output)
             else:
-                resp.body = json.dumps({'output': 'auth key not matched'})
+                resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': 'Auth Key not Found :{} \n {}'.format(k, output)})
+            resp.body = json.dumps({'output': k})
 
-api = application = falcon.API()
+
+api = falcon.API()
 
 
 api.add_route('/falcon/api/Login/', LoginClass())
