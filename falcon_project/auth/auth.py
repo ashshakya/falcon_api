@@ -1,14 +1,19 @@
 from hashlib import md5
-import base64
 from datetime import datetime
 
-from pymongo import MongoClient
+import jwt
+
+from . import verify_token, SECRET_KEY, MONGO_CLIENT
 import config
+import otp_generate_engine
 
 
 def register_auth(data):
+    """ Method to be used for Registration.
+        If email already exists then return a error message otherwise
+        creates a new user. All data stored into the mongoDB.
+    """
     output = {}
-    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     if data['password'] != data['re-password']:
         return 'Password not matched'
     passwd = str(md5((data['password']).encode('utf-8', 'ignore')).hexdigest())
@@ -17,33 +22,67 @@ def register_auth(data):
     doc = {
         "name": name,
         "email": email,
-        "password": passwd
+        "password": passwd,
+        "verified": False
     }
-    res = db[config.DB_COLLECTION].find_one({"email": email})
+    payload = {
+        'email': email,
+        'token_time': str(datetime.now())
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    res = MONGO_CLIENT[config.DB_COLL].find_one({"email": email})
     if not res:
-        db[config.DB_COLLECTION].insert_one(doc)
+        doc['otp'] = otp_generate_engine.generate_mail_otp(email)['otp']
+        doc['open_timestamp'] = datetime.now()
+        MONGO_CLIENT[config.DB_COLL].insert_one(doc)
         output['status'] = 'created'
+        output['access_token'] = token
     else:
         output['status'] = "email already exists."
     return output
 
 
-def login_auth(email, passwd):
+@verify_token
+def otp_verification(data):
+    """ Method to verify the OTP.
+    """
     output = {}
-    db = MongoClient(config.DB_HOST)[config.DB_NAME]
-    result = db[config.DB_COLLECTION].find_one({"email": email})
+    otp = data['otp']
+    result = MONGO_CLIENT[config.DB_COLL].find_one({"email": data['email']})
+    if result:
+        if result['otp'] == otp:
+            doc = {
+                "verified": True
+            }
+            MONGO_CLIENT[config.DB_COLL].update_one({"email": data['email']},
+                                                    {'$set': doc})
+            output['status'] = 'Verified'
+        else:
+            output['status'] = 'OTP not matched'
+    else:
+        output['status'] = 'Record not found'
+    return output
+
+
+def login_auth(email, passwd):
+    """ Method to be used to login into the system and
+        generated the access_token and maintain session.
+    """
+    output = {}
+    result = MONGO_CLIENT[config.DB_COLL].find_one({"email": email})
     if result:
         if md5(passwd).hexdigest() == result["password"]:
-            output['status'] = "success"
-            date = datetime.now()
-            token = base64.b64encode(email) + base64.b64encode(str(date))
-            doc = {
-                "date": date,
-                "token": token
-            }
-            db[config.DB_COLLECTION].update_one({"email": email},
-                                                {'$set': doc})
-            output['access_token'] = token
+            if result['verified']:
+                output['status'] = "success"
+                date = datetime.now()
+                payload = {
+                    'email': email,
+                    'token_time': str(date)
+                }
+                token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+                output['access_token'] = token
+            else:
+                output['status'] = "not_verified"
         else:
             output['status'] = False
     else:
@@ -51,47 +90,37 @@ def login_auth(email, passwd):
     return output
 
 
+@verify_token
 def file_upload(file):
+    """ Method used for adding file path to mongoDB by using
+        access_token and checking session of a user for 30 mins.
+    """
     output = {}
-    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     file_path = file['filepath']
     email = file['email']
-    result = db[config.DB_COLLECTION].find_one({"email": email})
+    result = MONGO_CLIENT[config.DB_COLL].find_one({"email": email})
     if result:
-        if result["token"] == file['access_token']:
-            now = datetime.now()
-            if (now - result["date"]).seconds < 300:
-                doc = {
-                    "file_path": file_path
-                }
-                db[config.DB_COLLECTION].update_one({"email": email},
-                                                    {'$set': doc})
-                output['status'] = "Uploaded"
-            else:
-                output['status'] = "session failed"
-        else:
-            output['status'] = "Not authorized."
+        doc = {
+            "file_path": file_path
+        }
+        MONGO_CLIENT[config.DB_COLL].update_one({"email": email},
+                                                {'$set': doc})
+        output['status'] = "Uploaded"
     else:
         output['status'] = "Not Record Found"
     return output
 
 
+@verify_token
 def upload_detail(data):
+    """ Method used to
+    """
     output = {}
-    db = MongoClient(config.DB_HOST)[config.DB_NAME]
     email = data['email']
-    result = db[config.DB_COLLECTION].find_one({"email": email})
+    result = MONGO_CLIENT[config.DB_COLL].find_one({"email": email})
     if result:
-        if result["token"] == data['access_token']:
-            now = datetime.now()
-            if (now - result["date"]).seconds < 300:
-                detail = db[config.DB_COLLECTION].find_one({"email": email})
-                output["file_path"] = detail["file_path"]
-                output['status'] = True
-            else:
-                output['status'] = "session failed"
-        else:
-            output['status'] = "Not authorized."
+        output["file_path"] = result["file_path"]
+        output['status'] = True
     else:
         output['status'] = "Not Record Found"
     return output

@@ -7,4 +7,4 @@ import os
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
 DB_PORT = int(os.environ.get("DB_PORT", 27017))
 DB_NAME = os.environ.get("DB_NAME", "falcon")
-DB_COLLECTION = os.environ.get("DB_COLLECTION", "upload")
+DB_COLL = os.environ.get("DB_COLLECTION", "upload")
