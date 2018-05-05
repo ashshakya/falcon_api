@@ -19,8 +19,8 @@ class RegisterClass:
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
         try:
-            d = json.loads(req.stream.read())
-            output = auth.register_auth(d)
+            data = json.loads(req.stream.read())
+            output = auth.register_auth(data)
             resp.body = json.dumps(output)
         except KeyError as k:
             resp.body = json.dumps({'output': k})
@@ -51,9 +51,9 @@ class LoginClass(object):
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
         try:
-            d = json.loads(req.stream.read())
-            email = d['email']
-            passwd = d['password']
+            data = json.loads(req.stream.read())
+            email = data['email']
+            passwd = data['password']
             output = auth.login_auth(email, passwd)
             output['email'] = email
             resp.body = json.dumps(output)
@@ -70,8 +70,8 @@ class UploadClass:
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
         try:
-            d = json.loads(req.stream.read())
-            output = auth.file_upload(d)
+            data = json.loads(req.stream.read())
+            output = auth.file_upload(data)
             resp.body = json.dumps(output)
         except KeyError as k:
             resp.body = json.dumps({'output': k})
@@ -86,8 +86,8 @@ class DetailClass:
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
         try:
-            d = json.loads(req.stream.read())
-            output = auth.upload_detail(d)
+            data = json.loads(req.stream.read())
+            output = auth.upload_detail(data)
             resp.body = json.dumps(output)
         except KeyError as k:
             resp.body = json.dumps({'output': k})
