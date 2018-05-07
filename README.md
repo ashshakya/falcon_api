@@ -3,13 +3,10 @@
 A Falcon app in python that has following Api's:
 
 1) Register/Create Account
-2) Users should be able to login into their account using user & pass
-3) Users should be able to upload files and to their account
-      --  This should be an API defining only the name of the file that user wants to upload.
-           save the filename in the database.( Actual upload of file is not required )
+2) Verify the account with otp recieved in email that provided.
+3) Users will be able to login into their account using email & password.
+4) Users will be able to make a entry in db and view records of own account.
 
-
-4) Each user should be able to list the names of files uploaded by them and for each file show the time of upload.
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +14,7 @@ Create your virtual environment and install all dependent libraries by running f
 
     pip install -r requirement.txt
 
-To Register : {host_ip}:{host:port}/falcon/api/Register/
+To Register : {host_ip}:{host:port}/api/v1/Register/
 Method : POST
 Param :
     {
@@ -27,15 +24,23 @@ Param :
         "re-password" :
     }
 
-
-To Login : {host_ip}:{port}/falcon/api/Login/
+To Verify with OTP: {host_ip}:{host:port}/api/v1/Verify/
 Method : POST
 Param : {
-	"username" : ,
+    "name" : ,
+    "email": ,
+    "access_token": ,
+    "otp": ,
+}
+
+To Login : {host_ip}:{port}/api/v1/Login/
+Method : POST
+Param : {
+	"email" : ,
 	"password" :
 }
 
-To Upload : {host_ip}:{host:port}/falcon/api/Upload/
+To Upload : {host_ip}:{host:port}/api/v1/Upload/
 Method : POST
 Param : {
 	"filepath": ,
@@ -43,7 +48,7 @@ Param : {
     "access_token"
 }
 
-To get Details : {host_ip}:{host:port}/falcon/api/Detail/
+To get Details : {host_ip}:{host:port}/api/v1/Detail/
 Method : POST
 Param :{
 	"email": ,
@@ -51,8 +56,8 @@ Param :{
 }
 
 	git clone git@github.com:ashshakya/falcon_api.git
-	cd falcon_api
-	pip install -r requirement.txt
+	cd falcon_api/falcon_project
+	pip install -r ../requirement.txt
 	gunicorn --reload falcon_api.app
 
 
