@@ -23,7 +23,7 @@ class RegisterClass:
             output = auth.register_auth(data)
             resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': k})
+            resp.body = json.dumps({'output': str(k)})
 
 
 class OptVerificationClass:
@@ -39,7 +39,7 @@ class OptVerificationClass:
             output = auth.otp_verification(data)
             resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': k})
+            resp.body = json.dumps({'output': str(k)})
 
 
 class LoginClass(object):
@@ -58,7 +58,7 @@ class LoginClass(object):
             output['email'] = email
             resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': k})
+            resp.body = json.dumps({'output': str(k)})
 
 
 class UploadClass:
@@ -74,7 +74,7 @@ class UploadClass:
             output = auth.file_upload(data)
             resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': k})
+            resp.body = json.dumps({'output': str(k)})
 
 
 class DetailClass:
@@ -90,4 +90,4 @@ class DetailClass:
             output = auth.upload_detail(data)
             resp.body = json.dumps(output)
         except KeyError as k:
-            resp.body = json.dumps({'output': k})
+            resp.body = json.dumps({'output': str(k)})
