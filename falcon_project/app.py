@@ -21,14 +21,19 @@ class RegisterClass:
         try:
             data = json.loads(req.stream.read())
             output = auth.register_auth(data)
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(output)
-        except KeyError as k:
+            if output.get("success", False):
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+            else:
+                resp.status = falcon.HTTP_202
+                resp.body = json.dumps(output)
+        except Exception as k:
+            resp.status = falcon.HTTP_400
             resp.body = json.dumps({'output': str(k)})
 
 
 class OptVerificationClass:
-    """ Registration Api"""
+    """ OTP Verification API"""
     def on_get(self, req, resp):
         resp.status = falcon.HTTP_405
         resp.body = json.dumps({'output':
@@ -38,9 +43,14 @@ class OptVerificationClass:
         try:
             data = json.loads(req.stream.read())
             output = auth.otp_verification(data)
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(output)
-        except KeyError as k:
+            if output.get("success", False):
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+            else:
+                resp.status = falcon.HTTP_202
+                resp.body = json.dumps(output)
+        except Exception as k:
+            resp.status = falcon.HTTP_400
             resp.body = json.dumps({'output': str(k)})
 
 
@@ -57,10 +67,14 @@ class LoginClass:
             email = data['email']
             passwd = data['password']
             output = auth.login_auth(email, passwd)
-            output['email'] = email
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(output)
-        except KeyError as k:
+            if output.get("success", False):
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+            else:
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+        except Exception as k:
+            resp.status = falcon.HTTP_400
             resp.body = json.dumps({'output': str(k)})
 
 
@@ -77,7 +91,7 @@ class UploadClass:
             output = auth.file_upload(data)
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(output)
-        except KeyError as k:
+        except Exception as k:
             resp.body = json.dumps({'output': str(k)})
 
 
@@ -94,5 +108,65 @@ class DetailClass:
             output = auth.upload_detail(data)
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(output)
-        except KeyError as k:
+        except Exception as k:
             resp.body = json.dumps({'output': str(k)})
+
+
+class ResetPasswordOtpRequestClass:
+    """ Password Reset otp request  """
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_405
+        resp.body = json.dumps({'output':
+                               "Hey, I think you are on wrong page."})
+
+    def on_post(self, req, resp):
+        try:
+            data = json.loads(req.stream.read())
+            output = auth.reset_password_otp_request(data)
+            if output.get("success", False):
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+            else:
+                resp.status = falcon.HTTP_202
+                resp.body = json.dumps(output)
+        except Exception as k:
+            resp.status = falcon.HTTP_400
+            resp.body = json.dumps({'output': str(k)})
+
+
+class ResetPasswordClass:
+    """ Reset Password """
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_405
+        resp.body = json.dumps({'output':
+                               "Hey, I think you are on wrong page."})
+
+    def on_post(self, req, resp):
+        try:
+            data = json.loads(req.stream.read())
+            output = auth.reset_password(data)
+            if output.get("success", False):
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(output)
+            else:
+                resp.status = falcon.HTTP_401
+                resp.body = json.dumps(output)
+        except Exception as k:
+            resp.status = falcon.HTTP_400
+            resp.body = json.dumps({'output': str(k)})
+
+
+# class GetUserClass:
+#     """ Get all user details."""
+#     def on_get(self, req, resp):
+#         try:
+#             output = auth.get_user_info()
+#             if output.get("success", False):
+#                 resp.status = falcon.HTTP_200
+#                 resp.body = json.dumps(output)
+#             else:
+#                 resp.status = falcon.HTTP_202
+#                 resp.body = json.dumps(output)
+#         except Exception as k:
+#             resp.status = falcon.HTTP_400
+#             resp.body = json.dumps({'output': str(k)})

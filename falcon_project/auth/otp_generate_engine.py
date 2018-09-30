@@ -1,41 +1,47 @@
 import urllib
 import urllib2
 import random
+import sys
 
 import smtplib
 
-def generate_mobile_otp(mobile):
-    # Your authentication key.
-    authkey = "209774A4F0FnL95ad05494"
-    otp = random.randint(1000, 9999)
-    message = "OTP for registration: %s" % otp
-    # Sender ID,While using route4 sender id should be 6 characters long.
-    sender = "112233"
+sys.path.append('..')
 
-    route = "default"
+from credentials import credentials
 
-    # Prepare you post parameters
-    values = {'authkey': authkey,
-              'mobiles': mobile,
-              'message': message,
-              'sender': sender,
-              'route': route
-              }
-    url = "https://control.msg91.com/api/sendhttp.php"
-    postdata = urllib.urlencode(values)
-    req = urllib2.Request(url, postdata)
-    response = urllib2.urlopen(req)
-    output = response.read()
-    return otp
+
+# def generate_mobile_otp(mobile):
+#     # Your authentication key.
+#     authkey = ""
+#     otp = random.randint(1000, 9999)
+#     message = "OTP for registration: %s" % otp
+#     # Sender ID,While using route4 sender id should be 6 characters long.
+#     sender = "112233"
+
+#     route = "default"
+
+#     # Prepare you post parameters
+#     values = {'authkey': authkey,
+#               'mobiles': mobile,
+#               'message': message,
+#               'sender': sender,
+#               'route': route
+#               }
+#     url = ""
+#     postdata = urllib.urlencode(values)
+#     req = urllib2.Request(url, postdata)
+#     response = urllib2.urlopen(req)
+#     output = response.read()
+#     return otp
 
 
 def generate_mail_otp(email):
 
     otp = random.randint(1000, 9999)
 
-    gmail_user = "asashwanishakya@gmail.com"
-    gmail_pwd = "@sh477108sonu"
-    FROM = "asashwanishakya@gmail.com"
+    gmail_user = credentials.get('sender')
+    gmail_pwd = credentials.get('password')
+    FROM = credentials.get('sender')
     SUBJECT = 'OTP'
     TEXT = 'OTP for registration: %s' % otp
     # Prepare actual message

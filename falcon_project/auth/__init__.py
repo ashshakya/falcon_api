@@ -10,11 +10,9 @@ MONGO_CLIENT = MongoClient(config.DB_HOST)[config.DB_NAME]
 
 
 def verify_token(func):
-    # argnames = func.func_code.co_varnames[:func.func_code.co_argcount]
-    # fname = func.func_name
 
     def decorator(*args, **kwargs):
-        token = args[0]['access_token']
+        token = args[0]['token']
         try:
             decode_data = jwt.decode(token, SECRET_KEY, algorithms='HS256')
             decode_token = decode_data.get("token_time", None)

@@ -1,0 +1,5 @@
+credentials = {
+    'sender': '',
+    'password': '',
+    'recipient': ''
+}

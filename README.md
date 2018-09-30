@@ -1,4 +1,4 @@
-# Falcon Basic API's
+# Falcon Basic Accounts Authentication API's
 
 A Falcon app in python that has following Api's:
 
@@ -7,6 +7,8 @@ A Falcon app in python that has following Api's:
 3) Users will be able to login into their account using email & password.
 4) Users will be able to make a entry in db and view records of own account.
 
+Application also have funcationality to reset password.
+
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -14,50 +16,49 @@ Create your virtual environment and install all dependent libraries by running f
 
     pip install -r requirement.txt
 
-To Register : {host_ip}:{host:port}/api/v1/Register/
+To Register : `/api/v1/Register/`
 Method : POST
-Param :
-    {
+Param : `{
         "name" : ,
         "email": ,
         "password" : ,
         "re-password" :
-    }
+    }`
 
-To Verify with OTP: {host_ip}:{host:port}/api/v1/Verify/
+To Verify with OTP: `/api/v1/Verify/`
 Method : POST
-Param : {
+Param : `{
     "name" : ,
     "email": ,
     "access_token": ,
     "otp": ,
-}
+}`
 
-To Login : {host_ip}:{port}/api/v1/Login/
+To Login : `/api/v1/Login/`
 Method : POST
-Param : {
-	"email" : ,
-	"password" :
-}
+Param : `{
+    "email" : ,
+    "password" :
+}`
 
-To Upload : {host_ip}:{host:port}/api/v1/Upload/
+To Upload : `/api/v1/Upload/`
 Method : POST
-Param : {
-	"filepath": ,
-	"email": ,
+Param : `{
+    "filepath": ,
+    "email": ,
     "access_token"
-}
+}`
 
-To get Details : {host_ip}:{host:port}/api/v1/Detail/
+To get Details : `/api/v1/Detail/`
 Method : POST
-Param :{
-	"email": ,
-	"access_token" :
-}
+Param : `{
+    "email": ,
+    "access_token" :
+}`
 
-	git clone git@github.com:ashshakya/falcon_api.git
-	cd falcon_api/falcon_project
-	pip install -r ../requirement.txt
-	gunicorn --reload falcon_api.app
+    git clone git@github.com:ashshakya/falcon_api.git
+    cd falcon_api/falcon_project
+    pip install -r ../requirement.txt
+    python runserver.py
 
 
